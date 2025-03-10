@@ -1,0 +1,9 @@
+streamlit
+mistralai
+boto3
+llama_index.core
+llama_index.llms.mistralai
+llama_index.embeddings.mistralai
+llama_index.llms.ollama
+llama_index.embeddings.ollama
+llama_index.embeddings.huggingface
