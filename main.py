@@ -25,6 +25,16 @@ if not api_key:
     st.info("Please enter your API key to continue.")
     st.stop()
 
+# Model Selection Dropdown
+model_options = ["mistral:latest", "llama3.2:latest", "deepseek-r1:8b"]
+selected_model = st.selectbox("Choose LLM Model", model_options, index=0)
+
+# Initialize Ollama with user-selected model
+Settings.llm = Ollama(model=f"{selected_model}", request_timeout=120.0)
+Settings.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
+st.write(f"Using Model: **{selected_model}**")
+
+
 # Initialize session state variables for persistence
 if "ocr_result" not in st.session_state:
     st.session_state["ocr_result"] = None
@@ -162,8 +172,8 @@ if "ocr_text" in st.session_state and st.button("Analyze with LlamaIndex"):
     # Initialize LlamaIndex Settings
     # Settings.llm = MistralAI(model="mistral-medium", api_key=api_key)
     # Settings.embed_model = MistralAIEmbedding(model_name="mistral-embed", api_key=api_key)
-    Settings.llm = Ollama(model="llama3.2:latest", request_timeout=120.0)
-    Settings.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
+    # Settings.llm = Ollama(model="mistral:latest", request_timeout=120.0)
+    # Settings.embed_model = HuggingFaceEmbedding(model_name="BAAI/bge-small-en-v1.5")
 
     print("Settings: ", Settings)
     # Convert OCR text into LlamaIndex Document
@@ -225,30 +235,4 @@ if "ocr_text" in st.session_state and st.button("Analyze with LlamaIndex"):
         st.write(f"**A:** {answer}")
         st.markdown("---")  # Add a separator for clarity
 
-# 5. Display Preview and OCR Result if available
-# if st.session_state["ocr_result"]:
-#     col1, col2 = st.columns(2)
-    
-#     with col1:
-#         st.subheader("Preview")
-#         if file_type == "PDF":
-#             # Embed PDF via iframe
-#             pdf_embed_html = (
-#                 f'<iframe src="{st.session_state["preview_src"]}" width="100%" '
-#                 f'height="800" frameborder="0"></iframe>'
-#             )
-#             st.markdown(pdf_embed_html, unsafe_allow_html=True)
-#         else:
-#             # For images, display using st.image
-#             if source_type == "Local Upload" and st.session_state["image_bytes"]:
-#                 st.image(st.session_state["image_bytes"])
-#             else:
-#                 st.image(st.session_state["preview_src"])
-    
-#     with col2:
-#         st.subheader("OCR Result")
-#         st.write(st.session_state["ocr_result"])
-#         # Create a custom download link for OCR result
-#         b64 = base64.b64encode(st.session_state["ocr_result"].encode()).decode()
-#         href = f'<a href="data:file/txt;base64,{b64}" download="ocr_result.txt">Download OCR Result</a>'
-#         st.markdown(href, unsafe_allow_html=True)
+
